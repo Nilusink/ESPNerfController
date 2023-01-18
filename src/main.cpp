@@ -4,60 +4,40 @@
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
+#include "weaponhandler.h"
 
+
+// configuration
 #define SSID "Nerfinator"
 #define PWD "nERFiNATOR8080"
-
 
 AsyncWebServer server(80);
 
 
-bool getBiometricsState()
-{
-  return true;
-}
-
-bool getJammerState()
-{
-  return true;
-}
-
-bool getMagState()
-{
-  return true;
-}
+// weapon handler setup
+wpn::Handler handler(12, 11);
 
 
-const char* charBoolean(bool b)
-{
-  return b ? "true" : "false";
-}
+IPAddress apIP(10, 10, 10, 1);
 
 
 void setup()
 {
+  // initialize serial connection
   Serial.begin(9600);
 
+  // create wifi hotspot
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
   WiFi.softAP(SSID, PWD);
-  IPAddress IP = WiFi.softAPIP();
-
-  Serial.print("AP IP: "); Serial.println(IP);
-  Serial.print("Local IP: "); Serial.println(WiFi.localIP());
 
   // request stuff
   server.on("/state", HTTP_GET, [](AsyncWebServerRequest *request)
   {
-    // get status
-    bool bio, jammer, mag;
-    bio = getBiometricsState();
-    jammer = getJammerState();
-    mag = getMagState();
-
-    // "convert" to json
+    // send status
     char buff[100];
-    sprintf(buff, "{\"mag\": %s, \"jammer\": %s, \"biometrics\": %s", charBoolean(mag), charBoolean(jammer), charBoolean(bio));
+    handler.get_as_json(buff);
 
-    // send response
     request->send_P(200, "application/json", buff);
   });
 
