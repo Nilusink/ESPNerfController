@@ -10,7 +10,7 @@ namespace wpn
     {
         private:
             // settings
-            int salvo_sleep = 200;
+            int salvo_sleep = 500;
 
             // pins
             uint8_t j_pin, m_pin, m_t_pin, t_pin, p_pin, p_m_pin, r_m_pin;

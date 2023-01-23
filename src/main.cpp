@@ -15,22 +15,22 @@ AsyncWebServer server(80);
 
 
 // weapon handler setup
-#define jammer_pin D7
-#define mag_pin D6
-#define motor_trigger_pin D5
-#define trigger_pin D4
-#define piston_pin D3
+#define JAMMER_PIN D7
+#define MAG_PIN D6
+#define MOTOR_TRIGGER_PIN D5
+#define TRIGGER_PIN D4
+#define PISTON_PIN D0
 
-#define piston_motor_pin D0
+#define PISTON_MOTOR_PIN D1
 
 
 wpn::Handler handler(
-  jammer_pin,
-  mag_pin,
-  motor_trigger_pin,
-  trigger_pin,
-  piston_pin,
-  piston_motor_pin
+  JAMMER_PIN,
+  MAG_PIN,
+  MOTOR_TRIGGER_PIN,
+  TRIGGER_PIN,
+  PISTON_PIN,
+  PISTON_MOTOR_PIN
 );
 
 
@@ -88,7 +88,7 @@ void setup()
     Serial.println("getting");
     // send status
     char buff[255];
-//    handler.get_as_json(buff);
+    handler.get_as_json(buff);
 
     Serial.println(buff);
 
@@ -109,5 +109,4 @@ void loop()
 {
   handler.update_states();
   handler.update_functionality();
-  delay(10);
 }

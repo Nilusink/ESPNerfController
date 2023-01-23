@@ -18,8 +18,8 @@ Handler::Handler(
     )
 {
     // save pin numbers
-    p_m_pin = piston_motor_pin;
     m_t_pin = motor_trigger_pin;
+    p_m_pin = piston_motor_pin;
     t_pin = trigger_pin;
     p_pin = piston_pin;
     j_pin = jammer_pin;
@@ -37,11 +37,12 @@ Handler::Handler(
 // private functions
 void Handler::piston_back()
 {
+    Serial.println("resetting piston");
     // motor on
-    digitalWrite(p_m_pin, 1);
+    analogWrite(p_m_pin, 180);
 
     // wait for piston to return
-    while (!digitalRead(p_pin));
+    while (digitalRead(p_pin)) {delay(2);}
 
     // turn motor off
     digitalWrite(p_m_pin, 0);
@@ -58,8 +59,10 @@ void Handler::fire_n(int count)
     // fire for count times
     for (int i = 0; i < count; i++)
     {
-        while (digitalRead(p_pin));  // wait for piston to leave
-        while (!digitalRead(p_pin)); // wait for piston to return
+        while (digitalRead(p_pin)) {delay(10);}  // wait for piston to leave
+
+        if (i == count - 1) {break;}  // on the last rotation, leave the piston out
+        else {while (!digitalRead(p_pin)) {delay(10);}}  // wait for piston to return
     }
 
     // turn motor off again
@@ -70,7 +73,6 @@ void Handler::fire_n(int count)
 void Handler::update_states()
 {
     motor_trigger = !digitalRead(m_t_pin);
-
     trigger = !digitalRead(t_pin);
     jammer = !digitalRead(j_pin);
     mag = !digitalRead(m_pin);
@@ -79,11 +81,15 @@ void Handler::update_states()
 void Handler::update_functionality()
 {
     bool peripherals_save = jammer && mag;
+    bool piston_state = digitalRead(p_pin);
+
+//    Serial.print("per: "); Serial.print(peripherals_save); Serial.print("\ttriggers: "); Serial.print(motor_trigger && trigger); Serial.print("\tpiston: "); Serial.println(piston_state);
 
     // check if firing
     if (peripherals_save && motor_trigger && trigger)
     {
         firing = true;
+        digitalWrite(p_m_pin, true);
         switch (fire_mode)
         {
             case 0:  // full auto
@@ -114,12 +120,17 @@ void Handler::update_functionality()
     }
     else
     {
+        Serial.print("off: "); Serial.println(piston_state);
         // check if piston is back
-        if (!digitalRead(p_pin))
+        if (piston_state)
         {
+            digitalWrite(p_m_pin, false);
+            delay(500);
+
             // if not, put it to its default position
             piston_back();
         }
+
         // turn motor off
         digitalWrite(p_m_pin, false);
         firing = false;
