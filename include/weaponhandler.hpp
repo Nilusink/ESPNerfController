@@ -2,6 +2,15 @@
 #include <Arduino.h>
 
 
+#define JAMMER_PIN 0
+#define MAG_PIN 0
+#define MOTOR_TRIGGER_PIN 0
+#define TRIGGER_PIN 0
+#define PISTON_PIN 0
+#define PISTONR_MOTOR_PIN 0
+
+
+
 const char* charBoolean(bool b);
 
 namespace wpn
@@ -71,4 +80,6 @@ namespace wpn
 
             bool set_salvo_count(int count);
     };
+
+    extern wpn::Handler handler;
 }

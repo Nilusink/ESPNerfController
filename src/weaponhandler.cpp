@@ -1,4 +1,5 @@
-#include "weaponhandler.h"
+#include "weaponhandler.hpp"
+
 
 const char *charBoolean(bool b)
 {
@@ -223,3 +224,13 @@ bool Handler::set_salvo_count(int count)
     // success
     return true;
 }
+
+
+Handler wpn::handler(
+    JAMMER_PIN,
+    MAG_PIN,
+    MOTOR_TRIGGER_PIN,
+    TRIGGER_PIN,
+    PISTON_PIN,
+    PISTONR_MOTOR_PIN
+);
