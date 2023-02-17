@@ -1,12 +1,3 @@
-/**
- * @file fingerprint.hpp
- * @author Nilusink
- * @version 0.1
- * @date 2023-02-13
- *
- * @copyright Copyright (c) 2023
- *
- */
 #include "fingerprint.hpp"
 
 
@@ -21,6 +12,7 @@ bool Finger::setup()
     // set the data rate for the sensor serial port
     finger.begin(57600);
     delay(5);
+
     if (finger.verifyPassword())
     {
         Serial.println("Found fingerprint sensor!");
@@ -28,10 +20,7 @@ bool Finger::setup()
     else
     {
         Serial.println("Did not find fingerprint sensor :(");
-        while (1)
-        {
-            delay(1);
-        }
+        return false;
     }
 
     // check if the fingerprint sensor has available templates
@@ -50,6 +39,12 @@ bool Finger::setup()
         Serial.println(" templates");
     }
 
+    // turn on induction for sensor
+    pinMode(INDUCTION_PIN, OUTPUT);
+    pinMode(WAKEUP_PIN, INPUT);
+
+    digitalWrite(INDUCTION_PIN, HIGH);
+
     return true;
 }
 
@@ -66,7 +61,7 @@ int Finger::getFingerprintID()
         break;
 
     case FINGERPRINT_NOFINGER:
-        Serial.println("No finger detected");
+        // Serial.println("No finger detected");
         return -1;
 
     case FINGERPRINT_PACKETRECIEVEERR:

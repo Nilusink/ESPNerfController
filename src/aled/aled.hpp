@@ -2,7 +2,7 @@
  * @file aled.hpp
  * @author Nilusink
  * @brief a few useful functions for the built-in addressable leds
- * @version 1.0
+ * @version 0.8
  * @date 2023-02-13
  *
  * @copyright Copyright (c) 2023
@@ -11,15 +11,17 @@
 #pragma once
 #include <FastLED.h>
 
-#define NUM_LEDS 50
-#define DATA_PIN 25
+#define NUM_LEDS 15
+#define DATA_PIN1 12
+#define DATA_PIN2 4
 #define CLOCK_PIN 13
 
 
 namespace ALED
 {
     // Define the array of leds
-    extern CRGB leds[NUM_LEDS];
+    extern CRGB leds1[NUM_LEDS];
+    extern CRGB leds2[NUM_LEDS];
 
     /**
      * @brief setup the leds
